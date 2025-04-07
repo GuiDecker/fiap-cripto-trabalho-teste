@@ -1,0 +1,6 @@
+Tipos possíveis de notificações:
+- Alertas de volatilidade
+- Confirmação de execução de estratégia
+- Módulo educacional
+- Atualizações
+- Transações
