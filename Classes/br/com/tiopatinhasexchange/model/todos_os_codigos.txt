@@ -1,0 +1,2289 @@
+package br.com.tiopatinhasexchange.model;
+/*
+ * Classe que representa um alerta para o usuário sobre eventos importantes,
+ * como variações bruscas de preço, execução de estratégias automáticas, etc.
+*/
+public abstract class Alerta {
+
+    // Atributos
+    private int id;
+    private String tipo; // Tipo de alerta: VOLATILIDADE, ESTRATEGIA, SEGURANCA, INFORMATIVO
+    private String titulo;
+    private String conteudo;
+    private String prioridade; // ALTA, MEDIA, BAIXA
+
+    // Construtores
+    public Alerta() {
+    }
+    
+    public Alerta(String tipo, String titulo, String conteudo) {
+        this.tipo = tipo;
+        this.titulo = titulo;
+        this.conteudo = conteudo;
+        
+        // Define prioridade com base no tipo
+        if (tipo.equals("SEGURANCA") || tipo.equals("VOLATILIDADE")) {
+            this.prioridade = "ALTA";
+        } else if (tipo.equals("ESTRATEGIA")) {
+            this.prioridade = "MEDIA";
+        } else {
+            this.prioridade = "BAIXA";
+        }
+    }
+
+    // Métodos
+    
+    /**
+     * Exibe os detalhes do alerta
+    */
+    public void exibirDetalhes() {
+        System.out.println("=== Alerta ===");
+        System.out.println("ID: " + this.id);
+        System.out.println("Tipo: " + this.tipo);
+        System.out.println("Prioridade: " + this.prioridade);
+        System.out.println("Título: " + this.titulo);
+        System.out.println("Conteúdo: " + this.conteudo);
+        // System.out.println("==============");
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getConteudo() {
+        return conteudo;
+    }
+
+    public void setConteudo(String conteudo) {
+        this.conteudo = conteudo;
+    }
+
+    public String getPrioridade() {
+        return prioridade;
+    }
+
+    public void setPrioridade(String prioridade) {
+        this.prioridade = prioridade;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+/*
+ * Classe que representa um alerta de confirmação da execução de uma estratégia.
+*/
+
+public class AlertaExecucaoEstrategia extends Alerta {
+    
+    // Atributos
+    private int idUsuario; // Usuário que executou a estratégia
+    private int idExecucaoEstrategia; // Execução da estratégia
+    
+    // Métodos
+
+    // Construtores
+    public AlertaExecucaoEstrategia() {
+        super();
+        this.setTipo("ESTRATEGIA");
+        this.setPrioridade("MEDIA");
+    }
+
+    public AlertaExecucaoEstrategia(String titulo, String conteudo, int idUsuario, int idExecucaoEstrategia) {
+        super("ESTRATEGIA", titulo, conteudo);
+        this.idUsuario = idUsuario;
+        this.idExecucaoEstrategia = idExecucaoEstrategia;
+    }
+
+    // Getters e Setters
+    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    public int getIdExecucaoEstrategia() {
+        return idExecucaoEstrategia;
+    }
+    public void setIdExecucaoEstrategia(int idExecucaoEstrategia) {
+        this.idExecucaoEstrategia = idExecucaoEstrategia;
+    }
+
+    /**
+     * Cria um alerta de execução de estratégia
+     * @param idExecucaoEstrategia ID da execução da estratégia
+     * @return Alerta de estratégia criado
+     */
+    public static AlertaExecucaoEstrategia criarAlertaExecucaoEstrategia( 
+        int idUsuario, 
+        int idCriptoativo, 
+        String acao, 
+        double quantidade,
+        int idExecucaoEstrategia
+        ) {
+
+        String titulo = "Estratégia automática executada";
+        String conteudo = "A estratégia automática executou uma operação de " + acao + " de " + quantidade + " unidades do criptoativo ID:" + idCriptoativo + ".";
+        
+        AlertaExecucaoEstrategia alerta = new AlertaExecucaoEstrategia(titulo, conteudo, idUsuario, idExecucaoEstrategia);
+        
+        return alerta;
+    }
+
+    /**
+     * Exibe os detalhes do alerta informativo
+    */
+    @Override
+    public void exibirDetalhes() {
+        super.exibirDetalhes();
+        System.out.println("Execução da Estratégia: " + this.idExecucaoEstrategia);
+        System.out.println("Usuário: " + this.idUsuario);
+        System.out.println("==============");
+    }
+    
+
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+/*
+ * Classe que representa um alerta informativo para o usuário sobre assuntos de baixa importância.
+*/
+
+public class AlertaInformativo extends Alerta {
+
+    // Atributos
+    // String categoria;
+
+    // Construtores
+    public AlertaInformativo() {
+        super();
+        this.setTipo("INFORMATIVO");
+        this.setPrioridade("BAIXA");
+
+    }
+    
+    public AlertaInformativo(String tipo, String titulo, String conteudo) {
+        super(tipo, titulo, conteudo);
+    }
+
+    // Métodos
+    
+    /**
+     * Cria um alerta informativo
+     * @param mensagem Mensagem informativa
+     * @return Alerta criado
+     */
+    public static AlertaInformativo criarAlertaInformativo(String titulo, String mensagem) {
+        AlertaInformativo alerta = new AlertaInformativo();
+        alerta.setTipo("INFORMATIVO");
+        alerta.setPrioridade("BAIXA");
+
+        alerta.setTitulo(titulo);
+        alerta.setConteudo(mensagem);
+        
+        return alerta;
+    }
+
+    /**
+     * Exibe os detalhes do alerta informativo
+    */
+    @Override
+    public void exibirDetalhes() {
+        super.exibirDetalhes();
+        System.out.println("==============");
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/*
+ * Classe que representa um alerta personalizado pelo usuário sobre volatilidade de algum criptoativo.
+*/
+
+public class AlertaPersonalizado extends Alerta {
+
+    // Atributos
+    private int idUsuario; // Usuário que configurará o alerta
+    private int idCriptoativo; // Criptoativo sobre o qual será o alerta
+    private LocalDateTime dataHoraCriacao;
+    private String condicao;
+    private double valorReferencia;
+
+    // Métodos
+
+    // Construtores
+
+    public AlertaPersonalizado() {
+        super();
+        this.setTipo("VOLATILIDADE");
+        this.setPrioridade("ALTA");
+    }
+
+    public AlertaPersonalizado(String titulo, String conteudo, int idUsuario, int idCriptoativo, String condicao,
+            double valorReferencia) {
+        super("VOLATILIDADE", titulo, conteudo);
+        this.idUsuario = idUsuario;
+        this.idCriptoativo = idCriptoativo;
+        this.dataHoraCriacao = LocalDateTime.now();
+        this.condicao = condicao;
+        this.valorReferencia = valorReferencia;
+    }
+
+    // Getters e Setters
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public int getIdCriptoativo() {
+        return idCriptoativo;
+    }
+
+    public void setIdCriptoativo(int idCriptoativo) {
+        this.idCriptoativo = idCriptoativo;
+    }
+
+    public LocalDateTime getDataHoraCriacao() {
+        return dataHoraCriacao;
+    }
+
+    public void setDataHoraCriacao(LocalDateTime dataHoraCriacao) {
+        this.dataHoraCriacao = dataHoraCriacao;
+    }
+
+    public String getCondicao() {
+        return condicao;
+    }
+
+    public void setCondicao(String condicao) {
+        this.condicao = condicao;
+    }
+
+    public double getValorReferencia() {
+        return valorReferencia;
+    }
+
+    public void setValorReferencia(double valorReferencia) {
+        this.valorReferencia = valorReferencia;
+    }
+
+    /**
+     * Cria um alerta de volatilidade
+     * 
+     * @param idUsuario     ID do usuário
+     * @param idCriptoativo ID do criptoativo
+     * @param variacao      Variação percentual do preço
+     * @return Alerta de volatilidade criado
+     */
+    public static Alerta criarAlertaVolatilidade(int idUsuario, int idCriptoativo, double variacao) {
+        AlertaPersonalizado alerta = new AlertaPersonalizado();
+        alerta.setIdUsuario(idUsuario);
+        alerta.setIdCriptoativo(idCriptoativo);
+        alerta.setTipo("VOLATILIDADE");
+        alerta.setPrioridade("ALTA");
+
+        String direcao = variacao > 0 ? "aumento" : "queda";
+        String titulo = "Variação brusca de preço detectada!";
+        String conteudo = "O criptoativo ID:" + idCriptoativo + " sofreu " + direcao +
+                " de " + Math.abs(variacao) + "% nas últimas 24 horas.";
+
+        alerta.setTitulo(titulo);
+        alerta.setConteudo(conteudo);
+
+        return alerta;
+    }
+
+    // Exibir detalhes
+    /**
+     * Exibe os detalhes do alerta personalizado
+     */
+    @Override
+    public void exibirDetalhes() {
+        super.exibirDetalhes();
+        System.out.println("Usuário: " + this.idUsuario);
+        System.out.println("Criptoativo: " + this.idCriptoativo);
+        System.out.println("Data e Hora da Criação: " + this.dataHoraCriacao);
+        System.out.println("Condição: " + this.condicao);
+        System.out.println("Valor de Referência: " + this.valorReferencia);
+        System.out.println("==============");
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+/*
+ * Classe que representa um alerta de segurança destinado a algum usuário.
+*/
+
+public class AlertaSeguranca extends Alerta {
+    
+    // Atributos
+    private int idUsuario; // Usuário destinatário
+    
+    // Métodos
+
+    // Construtores
+    public AlertaSeguranca() {
+        super();
+        this.setTipo("SEGURANCA");
+        this.setPrioridade("ALTA");
+    }
+
+    public AlertaSeguranca(String titulo, String conteudo, int idUsuario) {
+        super("SEGURANCA", titulo, conteudo);
+        this.idUsuario = idUsuario;
+    }
+
+    // Getters e Setters
+    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    /**
+     * Cria um alerta de segurança
+     * @param idUsuario ID do usuário
+     * @param mensagem Mensagem de segurança
+     * @return Alerta de segurança criado
+     */
+    public static AlertaSeguranca criarAlertaSeguranca(int idUsuario, String mensagem) {
+        AlertaSeguranca alerta = new AlertaSeguranca();
+        alerta.setIdUsuario(idUsuario);
+        alerta.setTipo("SEGURANCA");
+        alerta.setPrioridade("ALTA");
+        
+        String titulo = "Alerta de Segurança";
+        
+        alerta.setTitulo(titulo);
+        alerta.setConteudo(mensagem);
+        
+        return alerta;
+    }
+
+    @Override
+    public void exibirDetalhes() {
+        super.exibirDetalhes();
+        System.out.println("Usuário: " + this.idUsuario);
+        System.out.println("==============");
+    }
+}
+ 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Classe que representa uma carteira de criptoativos do usuário.
+ */
+public class Carteira {
+    
+    // Atributos
+    private int id;
+    private int idUsuario;
+    private double saldo;
+    private Map<Integer, Double> posicoes; // Mapa de criptoativos: <ID do criptoativo, quantidade>
+    private List<Transacao> transacoes;
+
+    // Construtores
+    public Carteira() {
+    }
+    
+    public Carteira(int id, int idUsuario) {
+        this.id = id;
+        this.idUsuario = idUsuario;
+        this.saldo = 0.0;
+        this.posicoes = new HashMap<>();
+        this.transacoes = new ArrayList<>();
+    }
+
+    // Métodos
+    /**
+     * Adiciona saldo à carteira (depósito)
+     * @param valor Valor a ser adicionado
+     * @return Novo saldo da carteira
+     */
+    public double depositar(double valor) {
+        if (valor > 0) {
+            this.saldo += valor;
+        }
+        return this.saldo;
+    }
+    
+    /**
+     * Remove saldo da carteira (saque)
+     * @param valor Valor a ser removido
+     * @return Novo saldo da carteira ou -1 se saldo insuficiente
+     */
+    public double sacar(double valor) {
+        if (valor > 0 && valor <= this.saldo) {
+            this.saldo -= valor;
+        }
+        return this.saldo;
+    }
+    
+    /**
+     * Compra um criptoativo
+     * @param ativo Criptoativo a ser comprado
+     * @param quantidade Quantidade a ser comprada
+     * @param preco Preço unitário da compra
+     * @return true se a compra foi bem-sucedida
+     */
+    public boolean comprarAtivo(Criptoativo ativo, double quantidade, double preco) {
+        double custo = quantidade * preco;
+        if (custo <= this.saldo) {
+            this.saldo -= custo;
+            
+            if (this.posicoes == null) {
+                this.posicoes = new HashMap<>();
+            }
+            
+            Double atual = this.posicoes.getOrDefault(ativo.getId(), 0.0);
+            this.posicoes.put(ativo.getId(), atual + quantidade);
+            
+            // Registrar transação
+            Transacao transacao = new Transacao();
+            transacao.setIdUsuario(this.idUsuario);
+            transacao.setIdAtivo(ativo.getId());
+            transacao.setTipo("compra");
+            transacao.setVolumeTransacao(quantidade);
+            this.transacoes.add(transacao);
+            
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Vende um criptoativo
+     * @param ativo Criptoativo a ser vendido
+     * @param quantidade Quantidade a ser vendida
+     * @param preco Preço unitário da venda
+     * @return true se a venda foi bem-sucedida
+     */
+    public boolean venderAtivo(Criptoativo ativo, double quantidade, double preco) {
+        if (this.posicoes != null) {
+            Double possuido = this.posicoes.getOrDefault(ativo.getId(), 0.0);
+            if (possuido >= quantidade) {
+                this.saldo += quantidade * preco;
+                this.posicoes.put(ativo.getId(), possuido - quantidade);
+                
+                // Registrar transação
+                Transacao transacao = new Transacao();
+                transacao.setIdUsuario(this.idUsuario);
+                transacao.setIdAtivo(ativo.getId());
+                transacao.setTipo("venda");
+                transacao.setVolumeTransacao(quantidade);
+                this.transacoes.add(transacao);
+                
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Calcula o valor total da carteira com base nos preços atuais dos ativos
+     * @param mercado Objeto Mercado com os preços atuais
+     * @return Valor total da carteira
+     */
+    public double calcularValorTotal(Mercado mercado) {
+        double valorTotal = this.saldo;
+        
+        for (Map.Entry<Integer, Double> posicao : this.posicoes.entrySet()) {
+            Integer idAtivo = posicao.getKey();
+            Double quantidade = posicao.getValue();
+            
+            // Obter preço atual do ativo no mercado
+            double precoAtual = mercado.obterPrecoAtual(idAtivo);
+            
+            // Somar ao valor total
+            valorTotal += quantidade * precoAtual;
+        }
+        
+        return valorTotal;
+    }
+    
+    /**
+     * Exibe um resumo da carteira
+     */
+    public void exibirResumo() {
+        System.out.println("=== Carteira ID: " + this.id + " ===");
+        System.out.println("Saldo: " + this.saldo);
+        System.out.println("Quantidade de ativos: " + 
+                (this.posicoes != null ? this.posicoes.size() : 0));
+        System.out.println("Transações: " + this.transacoes.size());
+        System.out.println("==========================");
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public Map<Integer, Double> getPosicoes() {
+        return posicoes;
+    }
+
+    public void setPosicoes(Map<Integer, Double> posicoes) {
+        this.posicoes = posicoes;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
+
+    public void setTransacoes(List<Transacao> transacoes) {
+        this.transacoes = transacoes;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/**
+ * Classe que representa um criptoativo no sistema.
+ */
+public class Criptoativo {
+    
+    // Atributos
+    private int id;
+    private String nome;
+    private String simbolo;
+    private double precoAtual;
+    private double variacaoDia; // Variação percentual nas últimas 24h
+    private double volumeNegociado;
+    private LocalDateTime ultimaAtualizacao;
+    
+    // Construtores
+    public Criptoativo() {
+    }
+    
+    public Criptoativo(int id, String nome, String simbolo, double precoAtual) {
+        this.id = id;
+        this.nome = nome;
+        this.simbolo = simbolo;
+        this.precoAtual = precoAtual;
+        this.ultimaAtualizacao = LocalDateTime.now();
+    }
+    
+    // Métodos
+    public void atualizarPreco(double novoPreco) {
+        double precoAntigo = this.precoAtual;
+        this.precoAtual = novoPreco;
+        this.variacaoDia = ((novoPreco - precoAntigo) / precoAntigo) * 100;
+        this.ultimaAtualizacao = LocalDateTime.now();
+    }
+    
+    public void exibirInfo() {
+        System.out.println("=== " + this.nome + " (" + this.simbolo + ") ===");
+        System.out.println("Preço atual: " + this.precoAtual);
+        System.out.println("Variação 24h: " + this.variacaoDia + "%");
+        System.out.println("Volume negociado: " + this.volumeNegociado);
+        System.out.println("Última atualização: " + this.ultimaAtualizacao);
+    }
+    
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    public String getNome() {
+        return nome;
+    }
+    
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    
+    public String getSimbolo() {
+        return simbolo;
+    }
+    
+    public void setSimbolo(String simbolo) {
+        this.simbolo = simbolo;
+    }
+    
+    public double getPrecoAtual() {
+        return precoAtual;
+    }
+    
+    public void setPrecoAtual(double precoAtual) {
+        this.precoAtual = precoAtual;
+    }
+    
+    public double getVariacaoDia() {
+        return variacaoDia;
+    }
+    
+    public void setVariacaoDia(double variacaoDia) {
+        this.variacaoDia = variacaoDia;
+    }
+    
+    public double getVolumeNegociado() {
+        return volumeNegociado;
+    }
+    
+    public void setVolumeNegociado(double volumeNegociado) {
+        this.volumeNegociado = volumeNegociado;
+    }
+    
+    public LocalDateTime getUltimaAtualizacao() {
+        return ultimaAtualizacao;
+    }
+    
+    public void setUltimaAtualizacao(LocalDateTime ultimaAtualizacao) {
+        this.ultimaAtualizacao = ultimaAtualizacao;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/*
+* Classe que representa um disparo de algum alerta a algum usuário.
+*/
+
+public class DisparoAlerta {
+
+    // Atributos
+    private int id;
+    private int idUsuario; // Usuario para quem foi disparado
+    private int idAlerta; // Alerta que foi disparado
+    private LocalDateTime dataHoraDisparo;
+    private boolean lido; // Indica se o usuário leu a notificação
+    private boolean enviadoEmail; // Se o alerta foi enviado por e-mail
+
+    // Métodos
+
+    // Construtores
+
+    public DisparoAlerta() {
+        this.dataHoraDisparo = LocalDateTime.now();
+        this.lido = false;
+        this.enviadoEmail = false;
+    }
+
+    public DisparoAlerta(int id, int idUsuario, int idAlerta) {
+        this.id = id;
+        this.idUsuario = idUsuario;
+        this.idAlerta = idAlerta;
+        this.dataHoraDisparo = LocalDateTime.now();
+        this.lido = false;
+        this.enviadoEmail = false;
+    }
+
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public int getIdAlerta() {
+        return idAlerta;
+    }
+
+    public void setIdAlerta(int idAlerta) {
+        this.idAlerta = idAlerta;
+    }
+
+    public LocalDateTime getDataHoraDisparo() {
+        return dataHoraDisparo;
+    }
+
+    public void setDataHoraDisparo(LocalDateTime dataHoraDisparo) {
+        this.dataHoraDisparo = dataHoraDisparo;
+    }
+
+    public boolean isLido() {
+        return lido;
+    }
+
+    public void setLido(boolean lido) {
+        this.lido = lido;
+    }
+
+    public boolean isEnviadoEmail() {
+        return enviadoEmail;
+    }
+
+    public void setEnviadoEmail(boolean enviadoEmail) {
+        this.enviadoEmail = enviadoEmail;
+    }
+
+    /* Marcar disparo como lido*/
+    public boolean marcarComoLido() {
+        if (!lido) {
+            lido = true;
+        }
+        return lido;
+    }
+
+    /**
+     * Envia o alerta por e-mail (simulação)
+     * 
+     * @param emailDestino Email para envio do alerta
+     * @return true se o e-mail foi enviado com sucesso
+     */
+    public boolean enviarPorEmail(String emailDestino, String prioridade, String titulo, String conteudo) {
+        if (emailDestino == null || emailDestino.isEmpty()) {
+            return false;
+        }
+
+        // Simulação de envio de e-mail
+        System.out.println("Enviando alerta por e-mail para: " + emailDestino);
+        System.out.println("Assunto: [" + prioridade + "] " + titulo);
+        System.out.println("Conteúdo: " + conteudo);
+
+        this.enviadoEmail = true;
+        return true;
+    }
+}
+ 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/**
+ * Classe que representa uma estratégia automática para compra e venda de
+ * criptoativos
+ * com base em condições predefinidas pelo usuário.
+ */
+public class EstrategiaAutomatica {
+
+    // Atributos
+    private int id;
+    private int idUsuario;
+    private int idCriptoativo;
+    private int idCarteira; // Carteira onde a estratégia será executada
+    private String condicao; // PRECO_ACIMA, PRECO_ABAIXO, VARIACAO_ACIMA, VARIACAO_ABAIXO
+    private String acao; // COMPRAR, VENDER
+    private double valorReferencia; // Valor de referência para a condição
+    private double quantidade; // Quantidade a ser comprada ou vendida
+    private boolean ativa; // Se a estratégia está ativa ou não
+    private LocalDateTime dataHoraCriacao;
+    private LocalDateTime ultimaExecucao;
+    // frequenciaVerificação
+
+    // Construtores
+    public EstrategiaAutomatica() {
+        this.dataHoraCriacao = LocalDateTime.now();
+        this.ativa = true;
+    }
+
+    public EstrategiaAutomatica(int idUsuario, int idCriptoativo, String condicao, String acao,
+            double valorReferencia, double quantidade, int idCarteira) {
+        this.idUsuario = idUsuario;
+        this.idCriptoativo = idCriptoativo;
+        this.condicao = condicao;
+        this.acao = acao;
+        this.valorReferencia = valorReferencia;
+        this.quantidade = quantidade;
+        this.idCarteira = idCarteira;
+        this.dataHoraCriacao = LocalDateTime.now();
+        this.ativa = true;
+    }
+
+    // Métodos
+    /**
+     * Verifica se a estratégia deve ser executada com base nas condições de mercado
+     * 
+     * @param mercado Objeto Mercado com os dados atuais
+     * @return true se a estratégia deve ser executada
+     */
+    public boolean verificarCondicao(Mercado mercado) {
+        if (!this.ativa) {
+            return false;
+        }
+
+        double precoAtual = mercado.obterPrecoAtual(this.idCriptoativo);
+
+        // Verificar se o ativo existe no mercado
+        if (precoAtual < 0) {
+            return false;
+        }
+
+        // Verificar a condição
+        switch (this.condicao) {
+            case "PRECO_ACIMA":
+                return precoAtual >= this.valorReferencia;
+
+            case "PRECO_ABAIXO":
+                return precoAtual <= this.valorReferencia;
+
+            case "VARIACAO_ACIMA":
+                double variacao = mercado.calcularVariacao(this.idCriptoativo, 24);
+                return variacao >= this.valorReferencia;
+
+            case "VARIACAO_ABAIXO":
+                double variacaoNegativa = mercado.calcularVariacao(this.idCriptoativo, 24);
+                return variacaoNegativa <= this.valorReferencia;
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Executa a estratégia na carteira do usuário
+     * 
+     * @param carteira Carteira do usuário
+     * @param ativo    Criptoativo a ser negociado
+     * @param mercado  Mercado para obter o preço atual
+     * @return true se a estratégia foi executada com sucesso
+     */
+    public boolean executar(Carteira carteira, Criptoativo ativo, Mercado mercado) {
+        if (!this.ativa || carteira.getId() != this.idCarteira) {
+            return false;
+        }
+
+        double precoAtual = mercado.obterPrecoAtual(this.idCriptoativo);
+
+        if (precoAtual < 0) {
+            return false;
+        }
+
+        boolean resultado = false;
+
+        // Executar a ação
+        if (this.acao.equals("COMPRAR")) {
+            resultado = carteira.comprarAtivo(ativo, this.quantidade, precoAtual);
+        } else if (this.acao.equals("VENDER")) {
+            resultado = carteira.venderAtivo(ativo, this.quantidade, precoAtual);
+        }
+
+        if (resultado) {
+            this.ultimaExecucao = LocalDateTime.now();
+
+            // Criar registro de execucao da estratégia
+            ExecucaoEstrategia execucao = new ExecucaoEstrategia(this.id, this.idCarteira);
+
+            // Criar alerta para notificar o usuário
+            AlertaExecucaoEstrategia alerta = AlertaExecucaoEstrategia.criarAlertaExecucaoEstrategia(
+                    this.idUsuario,
+                    this.idCriptoativo,
+                    this.acao.toLowerCase(),
+                    this.quantidade,
+                    execucao.getId());
+
+            // Em uma implementação real, o alerta seria salvo em banco de dados
+            System.out.println("Alerta criado: " + alerta.getTitulo());
+        }
+
+        return resultado;
+    }
+
+    /**
+     * Ativa ou desativa a estratégia
+     * 
+     * @param ativar true para ativar, false para desativar
+     * @return true se a operação foi bem-sucedida
+     */
+    public boolean configurarAtivacao(boolean ativar) {
+        this.ativa = ativar;
+        return true;
+    }
+
+    /**
+     * Exibe os detalhes da estratégia
+     */
+    public void exibirDetalhes() {
+        System.out.println("=== Estratégia Automática ===");
+        System.out.println("ID: " + this.id);
+        System.out.println("Criptoativo: " + this.idCriptoativo);
+        System.out.println("Condição: " + this.condicao);
+        System.out.println("Valor de Referência: " + this.valorReferencia);
+        System.out.println("Ação: " + this.acao);
+        System.out.println("Quantidade: " + this.quantidade);
+        System.out.println("Status: " + (this.ativa ? "Ativa" : "Inativa"));
+        System.out.println("Data de Criação: " + this.dataHoraCriacao);
+        if (this.ultimaExecucao != null) {
+            System.out.println("Última Execução: " + this.ultimaExecucao);
+        }
+        System.out.println("===========================");
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public int getIdCriptoativo() {
+        return idCriptoativo;
+    }
+
+    public void setIdCriptoativo(int idCriptoativo) {
+        this.idCriptoativo = idCriptoativo;
+    }
+
+    public String getCondicao() {
+        return condicao;
+    }
+
+    public void setCondicao(String condicao) {
+        this.condicao = condicao;
+    }
+
+    public String getAcao() {
+        return acao;
+    }
+
+    public void setAcao(String acao) {
+        this.acao = acao;
+    }
+
+    public double getValorReferencia() {
+        return valorReferencia;
+    }
+
+    public void setValorReferencia(double valorReferencia) {
+        this.valorReferencia = valorReferencia;
+    }
+
+    public double getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(double quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
+    }
+
+    public LocalDateTime getdataHoraCriacao() {
+        return dataHoraCriacao;
+    }
+
+    public void setdataHoraCriacao(LocalDateTime dataHoraCriacao) {
+        this.dataHoraCriacao = dataHoraCriacao;
+    }
+
+    public LocalDateTime getUltimaExecucao() {
+        return ultimaExecucao;
+    }
+
+    public void setUltimaExecucao(LocalDateTime ultimaExecucao) {
+        this.ultimaExecucao = ultimaExecucao;
+    }
+
+    public int getIdCarteira() {
+        return idCarteira;
+    }
+
+    public void setIdCarteira(int idCarteira) {
+        this.idCarteira = idCarteira;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/*
+ * Classe que representa uma execução de alguma estratégia.
+*/
+
+public class ExecucaoEstrategia {
+    
+    // Atributos
+    private int id;
+    private int idEstrategiaAutomatica; // EstrategiaExecutada
+    private int idCarteira; // Carteira em que foi executada a estratégia
+    private LocalDateTime dataHoraExecucao;
+
+    // Métodos
+
+    // Construtores
+
+    public ExecucaoEstrategia() {
+        this.dataHoraExecucao = LocalDateTime.now();
+    }
+    
+    public ExecucaoEstrategia(int idEstrategiaAutomatica, int idCarteira) {
+        this.idEstrategiaAutomatica = idEstrategiaAutomatica;
+        this.idCarteira = idCarteira;
+        this.dataHoraExecucao = LocalDateTime.now();
+    }
+
+    // Getters e Setters
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getIdEstrategiaAutomatica() {
+        return idEstrategiaAutomatica;
+    }
+    public void setIdEstrategiaAutomatica(int idEstrategiaAutomatica) {
+        this.idEstrategiaAutomatica = idEstrategiaAutomatica;
+    }
+    public int getIdCarteira() {
+        return idCarteira;
+    }
+    public void setIdCarteira(int idCarteira) {
+        this.idCarteira = idCarteira;
+    }
+    public LocalDateTime getDataHoraExecucao() {
+        return dataHoraExecucao;
+    }
+    public void setDataHoraExecucao(LocalDateTime dataHoraExecucao) {
+        this.dataHoraExecucao = dataHoraExecucao;
+    }
+
+    // Exibir detalhes
+    /**
+     * Exibe os detalhes do alerta personalizado
+     */
+    public void exibirDetalhes() {
+        System.out.println("=== Execução de Estratégia ===");
+        System.out.println("ID: " + this.id);
+        System.out.println("Estratégia Automática: " + this.idEstrategiaAutomatica);
+        System.out.println("Carteira: " + this.idCarteira);
+        System.out.println("Data e Hora da Execução: " + this.dataHoraExecucao);
+        System.out.println("==============");
+    }
+}
+ 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Classe responsável por coletar, processar e fornecer dados em tempo real sobre
+ * o mercado de criptoativos, como preços, tendências e eventos críticos.
+ */
+public class Mercado {
+    /* Coletar, processar e fornecer dados em tempo real sobre o mercado de criptoativos, como preços, tendências e eventos críticos. Essas informações são essenciais para reduzir o impacto da volatilidade e apoiar decisões de investimento. */
+
+    // Atributos
+    private Map<Integer, Double> precosAtuais; // Mapa de preços atuais: <ID do ativo, preço>
+    private List<Map<Integer, Double>> historicoPrecos; // Histórico de preços
+    private List<LocalDateTime> timestampsHistorico; // Timestamps correspondentes ao histórico
+    private Map<Integer, Double> volumeNegociacao24h; // Volume negociado nas últimas 24h por ativo
+    private Map<String, Double> indicadoresMercado; // Indicadores gerais do mercado (dominância BTC, etc.)
+    private List<String> eventos; // Eventos importantes (notícias, regulamentações, etc.)
+    private LocalDateTime ultimaAtualizacao; // Timestamp da última atualização de dados
+
+    // Construtores
+    public Mercado() {
+        this.precosAtuais = new HashMap<>();
+        this.historicoPrecos = new ArrayList<>();
+        this.timestampsHistorico = new ArrayList<>();
+        this.volumeNegociacao24h = new HashMap<>();
+        this.indicadoresMercado = new HashMap<>();
+        this.eventos = new ArrayList<>();
+        this.ultimaAtualizacao = LocalDateTime.now();
+    }
+
+    // Métodos
+    /**
+     * Atualiza os preços dos criptoativos a partir de uma fonte externa (API)
+     * @param dadosAtualizados Mapa com os preços atualizados
+     * @return true se a atualização foi bem-sucedida
+     */
+    public boolean atualizarPrecos(Map<Integer, Double> dadosAtualizados) {
+        if (dadosAtualizados == null || dadosAtualizados.isEmpty()) {
+            return false;
+        }
+        
+        // Salvar preços anteriores no histórico
+        Map<Integer, Double> precosAnteriores = new HashMap<>(this.precosAtuais);
+        this.historicoPrecos.add(precosAnteriores);
+        this.timestampsHistorico.add(this.ultimaAtualizacao);
+        
+        // Atualizar preços
+        this.precosAtuais.putAll(dadosAtualizados);
+        this.ultimaAtualizacao = LocalDateTime.now();
+        
+        return true;
+    }
+    
+    /**
+     * Atualiza volume de negociação nas últimas 24h
+     * @param dadosVolume Mapa com os volumes atualizados
+     * @return true se a atualização foi bem-sucedida
+     */
+    public boolean atualizarVolumeNegociacao(Map<Integer, Double> dadosVolume) {
+        if (dadosVolume == null || dadosVolume.isEmpty()) {
+            return false;
+        }
+        
+        this.volumeNegociacao24h.putAll(dadosVolume);
+        return true;
+    }
+    
+    /**
+     * Adiciona um evento importante ao mercado
+     * @param evento Descrição do evento
+     * @return true se o evento foi adicionado
+     */
+    public boolean adicionarEvento(String evento) {
+        if (evento == null || evento.isEmpty()) {
+            return false;
+        }
+        
+        this.eventos.add(evento);
+        return true;
+    }
+    
+    /**
+     * Obtém o preço atual de um criptoativo
+     * @param idAtivo ID do criptoativo
+     * @return Preço atual ou -1 se o ativo não existir
+     */
+    public double obterPrecoAtual(Integer idAtivo) {
+        return this.precosAtuais.getOrDefault(idAtivo, -1.0);
+    }
+    
+    /**
+     * Calcula a variação de preço de um ativo
+     * @param idAtivo ID do criptoativo
+     * @param periodoHoras Período em horas para calcular a variação
+     * @return Variação percentual no período
+     */
+    public double calcularVariacao(Integer idAtivo, int periodoHoras) {
+        // Verificar se o ativo existe
+        if (!this.precosAtuais.containsKey(idAtivo)) {
+            return 0.0;
+        }
+        
+        double precoAtual = this.precosAtuais.get(idAtivo);
+        
+        // Verificar se há histórico suficiente
+        if (this.historicoPrecos.size() < 1) {
+            return 0.0;
+        }
+        
+        // Encontrar o preço mais próximo do período solicitado
+        LocalDateTime alvoTimestamp = this.ultimaAtualizacao.minusHours(periodoHoras);
+        int indiceAlvo = 0;
+        
+        for (int i = 0; i < this.timestampsHistorico.size(); i++) {
+            if (this.timestampsHistorico.get(i).isAfter(alvoTimestamp)) {
+                indiceAlvo = i;
+                break;
+            }
+        }
+        
+        if (indiceAlvo >= this.historicoPrecos.size()) {
+            indiceAlvo = this.historicoPrecos.size() - 1;
+        }
+        
+        Map<Integer, Double> precosAnteriores = this.historicoPrecos.get(indiceAlvo);
+        double precoAnterior = precosAnteriores.getOrDefault(idAtivo, precoAtual);
+        
+        if (precoAnterior == 0) {
+            return 0.0;
+        }
+        
+        return ((precoAtual - precoAnterior) / precoAnterior) * 100;
+    }
+    
+    /**
+     * Detecta ativos com variação brusca de preço
+     * @param limiteVariacao Limite percentual para considerar variação brusca
+     * @return Mapa com os ativos e suas variações que excederam o limite
+     */
+    public Map<Integer, Double> detectarVariacoesBruscas(double limiteVariacao) {
+        Map<Integer, Double> variacoesBruscas = new HashMap<>();
+        
+        for (Integer idAtivo : this.precosAtuais.keySet()) {
+            double variacao24h = calcularVariacao(idAtivo, 24);
+            
+            if (Math.abs(variacao24h) >= limiteVariacao) {
+                variacoesBruscas.put(idAtivo, variacao24h);
+            }
+        }
+        
+        return variacoesBruscas;
+    }
+    
+    /**
+     * Exibe um resumo do mercado atual
+     */
+    public void exibirResumoMercado() {
+        System.out.println("=== Resumo do Mercado ===");
+        System.out.println("Última Atualização: " + this.ultimaAtualizacao);
+        System.out.println("Ativos Monitorados: " + this.precosAtuais.size());
+        
+        // Calcular total de capitalização
+        double capitalizacaoTotal = 0.0;
+        for (Map.Entry<Integer, Double> entry : this.precosAtuais.entrySet()) {
+            Integer idAtivo = entry.getKey();
+            Double preco = entry.getValue();
+            Double volume = this.volumeNegociacao24h.getOrDefault(idAtivo, 0.0);
+            capitalizacaoTotal += preco * volume;
+        }
+        
+        System.out.println("Capitalização Total: " + capitalizacaoTotal);
+        System.out.println("Dominância BTC: " + this.indicadoresMercado.getOrDefault("dominancia_btc", 0.0) + "%");
+        System.out.println("Eventos Recentes: " + (this.eventos.isEmpty() ? "Nenhum" : this.eventos.get(this.eventos.size() - 1)));
+        System.out.println("========================");
+    }
+
+    // Getters e Setters
+    public Map<Integer, Double> getPrecosAtuais() {
+        return precosAtuais;
+    }
+
+    public void setPrecosAtuais(Map<Integer, Double> precosAtuais) {
+        this.precosAtuais = precosAtuais;
+    }
+
+    public List<Map<Integer, Double>> getHistoricoPrecos() {
+        return historicoPrecos;
+    }
+
+    public void setHistoricoPrecos(List<Map<Integer, Double>> historicoPrecos) {
+        this.historicoPrecos = historicoPrecos;
+    }
+
+    public List<LocalDateTime> getTimestampsHistorico() {
+        return timestampsHistorico;
+    }
+
+    public void setTimestampsHistorico(List<LocalDateTime> timestampsHistorico) {
+        this.timestampsHistorico = timestampsHistorico;
+    }
+
+    public Map<Integer, Double> getVolumeNegociacao24h() {
+        return volumeNegociacao24h;
+    }
+
+    public void setVolumeNegociacao24h(Map<Integer, Double> volumeNegociacao24h) {
+        this.volumeNegociacao24h = volumeNegociacao24h;
+    }
+
+    public Map<String, Double> getIndicadoresMercado() {
+        return indicadoresMercado;
+    }
+
+    public void setIndicadoresMercado(Map<String, Double> indicadoresMercado) {
+        this.indicadoresMercado = indicadoresMercado;
+    }
+
+    public List<String> getEventos() {
+        return eventos;
+    }
+
+    public void setEventos(List<String> eventos) {
+        this.eventos = eventos;
+    }
+
+    public LocalDateTime getUltimaAtualizacao() {
+        return ultimaAtualizacao;
+    }
+
+    public void setUltimaAtualizacao(LocalDateTime ultimaAtualizacao) {
+        this.ultimaAtualizacao = ultimaAtualizacao;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe responsável pelo módulo educacional interativo,
+ * oferecendo conteúdo para aprendizado sobre criptoativos e mercado financeiro.
+ */
+public class ModuloEducacional {
+    
+    // Atributos
+    private int id;
+    private String tipo; // ARTIGO, VIDEO, CURSO
+    private String titulo;
+    private String conteudo;
+    private String nivel; // INICIANTE, INTERMEDIARIO, AVANCADO
+    private LocalDateTime dataPublicacao;
+    private int visualizacoes;
+    private List<String> comentarios;
+    private double avaliacaoMedia; // Média de avaliações (1-5)
+    private int autor; // ID do autor (pode ser um admin ou especialista)
+
+    // Construtores
+    public ModuloEducacional() {
+        this.comentarios = new ArrayList<>();
+        this.dataPublicacao = LocalDateTime.now();
+        this.visualizacoes = 0;
+        this.avaliacaoMedia = 0.0;
+    }
+    
+    public ModuloEducacional(String tipo, String titulo, String conteudo, String nivel) {
+        this.tipo = tipo;
+        this.titulo = titulo;
+        this.conteudo = conteudo;
+        this.nivel = nivel;
+        this.comentarios = new ArrayList<>();
+        this.dataPublicacao = LocalDateTime.now();
+        this.visualizacoes = 0;
+        this.avaliacaoMedia = 0.0;
+    }
+
+    // Métodos
+    /**
+     * Adiciona um comentário ao conteúdo educacional
+     * @param comentario Comentário a ser adicionado
+     * @return true se o comentário foi adicionado com sucesso
+     */
+    public boolean adicionarComentario(String comentario) {
+        if (comentario == null || comentario.isEmpty()) {
+            return false;
+        }
+        
+        return this.comentarios.add(comentario);
+    }
+    
+    /**
+     * Registra uma visualização do conteúdo
+     */
+    public void registrarVisualizacao() {
+        this.visualizacoes++;
+    }
+    
+    /**
+     * Adiciona uma avaliação ao conteúdo
+     * @param avaliacao Valor da avaliação (1-5)
+     * @return true se a avaliação foi registrada com sucesso
+     */
+    public boolean avaliar(int avaliacao) {
+        if (avaliacao < 1 || avaliacao > 5) {
+            return false;
+        }
+        
+        // Em uma implementação real, seria mantido um histórico de avaliações
+        // Aqui, apenas atualizamos a média
+        this.avaliacaoMedia = (this.avaliacaoMedia * this.visualizacoes + avaliacao) / (this.visualizacoes + 1);
+        return true;
+    }
+    
+    /**
+     * Verifica se o conteúdo é adequado para um determinado nível de conhecimento
+     * @param nivelUsuario Nível do usuário
+     * @return true se o conteúdo é adequado
+     */
+    public boolean verificarNivelAdequado(String nivelUsuario) {
+        if (nivelUsuario.equals("INICIANTE")) {
+            return this.nivel.equals("INICIANTE");
+        } else if (nivelUsuario.equals("INTERMEDIARIO")) {
+            return this.nivel.equals("INICIANTE") || this.nivel.equals("INTERMEDIARIO");
+        } else if (nivelUsuario.equals("AVANCADO")) {
+            return true; // Avançado pode acessar qualquer nível
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Exibe o conteúdo educacional
+     */
+    public void exibirConteudo() {
+        System.out.println("=== " + this.titulo + " ===");
+        System.out.println("Tipo: " + this.tipo);
+        System.out.println("Nível: " + this.nivel);
+        System.out.println("Publicado em: " + this.dataPublicacao);
+        System.out.println("Visualizações: " + this.visualizacoes);
+        System.out.println("Avaliação média: " + String.format("%.1f", this.avaliacaoMedia));
+        
+        System.out.println("\nConteúdo:");
+        System.out.println(this.conteudo);
+        
+        System.out.println("\nComentários (" + this.comentarios.size() + "):");
+        for (String comentario : this.comentarios) {
+            System.out.println("- " + comentario);
+        }
+        
+        System.out.println("=====================");
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getConteudo() {
+        return conteudo;
+    }
+
+    public void setConteudo(String conteudo) {
+        this.conteudo = conteudo;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
+    }
+
+    public LocalDateTime getDataPublicacao() {
+        return dataPublicacao;
+    }
+
+    public void setDataPublicacao(LocalDateTime dataPublicacao) {
+        this.dataPublicacao = dataPublicacao;
+    }
+
+    public int getVisualizacoes() {
+        return visualizacoes;
+    }
+
+    public void setVisualizacoes(int visualizacoes) {
+        this.visualizacoes = visualizacoes;
+    }
+
+    public List<String> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<String> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public double getAvaliacaoMedia() {
+        return avaliacaoMedia;
+    }
+
+    public void setAvaliacaoMedia(double avaliacaoMedia) {
+        this.avaliacaoMedia = avaliacaoMedia;
+    }
+
+    public int getAutor() {
+        return autor;
+    }
+
+    public void setAutor(int autor) {
+        this.autor = autor;
+    }
+}
+ 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+/*
+ * Classe que representa uma simulação de alguma estratégia em algum simulador.
+*/
+
+public class SimulacaoEstrategia {
+    // Atributos
+    private int id;
+    private int idSimulador; // Simulador em que ocorrerá a simulação
+    private int idEstrategiaAutomatica; // Estratégia que será simulada
+
+
+    // Construtores
+    public SimulacaoEstrategia() {
+    }
+
+    public SimulacaoEstrategia(int idEstrategiaAutomatica, int idSimulador) {
+        this.idEstrategiaAutomatica = idEstrategiaAutomatica;
+        this.idSimulador = idSimulador;
+    }
+
+    /**
+     * Exibe os detalhes da simulação da estratégia
+    */
+
+    public void exibirDetalhes() {
+        System.out.println("=== Simulação de Estratégia ===");
+        System.out.println("ID: " + this.id);
+        System.out.println("Estratégia: " + this.idEstrategiaAutomatica);
+        System.out.println("Simulador: ");
+        System.out.println("==============");
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+/**
+ * Classe responsável por simular investimentos em criptoativos sem risco real,
+ * permitindo que usuários testem estratégias antes de investir com dinheiro real.
+ */
+public class Simulador {
+    
+    // Atributos
+    private int id;
+    private int idUsuario;
+    private double saldoVirtual;
+    private Map<Integer, Double> posicoes; // Mapa de posições: <ID do ativo, quantidade>
+    private List<Map<String, Object>> historico; // Histórico de operações simuladas
+    private LocalDateTime dataInicio;
+    private LocalDateTime dataFim;
+    private double rendimentoTotal;
+    private boolean ativo;
+    private Map<String, Object> parametrosSimulacao; // Parâmetros personalizáveis da simulação
+
+    // Construtores
+    public Simulador() {
+        this.posicoes = new HashMap<>();
+        this.historico = new ArrayList<>();
+        this.dataInicio = LocalDateTime.now();
+        this.saldoVirtual = 10000.0; // Saldo inicial padrão
+        this.rendimentoTotal = 0.0;
+        this.ativo = true;
+        this.parametrosSimulacao = new HashMap<>();
+    }
+    
+    public Simulador(int idUsuario, double saldoInicial) {
+        this.idUsuario = idUsuario;
+        this.posicoes = new HashMap<>();
+        this.historico = new ArrayList<>();
+        this.dataInicio = LocalDateTime.now();
+        this.saldoVirtual = saldoInicial;
+        this.rendimentoTotal = 0.0;
+        this.ativo = true;
+        this.parametrosSimulacao = new HashMap<>();
+    }
+
+    // Métodos
+    /**
+     * Simula a compra de um criptoativo
+     * @param idCriptoativo ID do criptoativo
+     * @param quantidade Quantidade a ser comprada
+     * @param valorUnitario Valor unitário da compra
+     * @return true se a compra simulada foi bem-sucedida
+     */
+    public boolean simularCompra(int idCriptoativo, double quantidade, double valorUnitario) {
+        if (!this.ativo) {
+            return false;
+        }
+        
+        double valorTotal = quantidade * valorUnitario;
+        
+        // Verificar se há saldo suficiente
+        if (valorTotal > this.saldoVirtual) {
+            return false;
+        }
+        
+        // Realizar a compra simulada
+        this.saldoVirtual -= valorTotal;
+        
+        // Atualizar posição do criptoativo
+        Double posicaoAtual = this.posicoes.getOrDefault(idCriptoativo, 0.0);
+        this.posicoes.put(idCriptoativo, posicaoAtual + quantidade);
+        
+        // Registrar operação no histórico
+        Map<String, Object> operacao = new HashMap<>();
+        operacao.put("tipo", "compra");
+        operacao.put("idCriptoativo", idCriptoativo);
+        operacao.put("quantidade", quantidade);
+        operacao.put("valorUnitario", valorUnitario);
+        operacao.put("valorTotal", valorTotal);
+        operacao.put("dataHora", LocalDateTime.now());
+        this.historico.add(operacao);
+        
+        return true;
+    }
+    
+    /**
+     * Simula a venda de um criptoativo
+     * @param idCriptoativo ID do criptoativo
+     * @param quantidade Quantidade a ser vendida
+     * @param valorUnitario Valor unitário da venda
+     * @return true se a venda simulada foi bem-sucedida
+     */
+    public boolean simularVenda(int idCriptoativo, double quantidade, double valorUnitario) {
+        if (!this.ativo) {
+            return false;
+        }
+        
+        // Verificar se o usuário possui o ativo na quantidade desejada
+        Double posicaoAtual = this.posicoes.getOrDefault(idCriptoativo, 0.0);
+        if (posicaoAtual < quantidade) {
+            return false;
+        }
+        
+        // Realizar a venda simulada
+        double valorTotal = quantidade * valorUnitario;
+        this.saldoVirtual += valorTotal;
+        
+        // Atualizar posição do criptoativo
+        this.posicoes.put(idCriptoativo, posicaoAtual - quantidade);
+        
+        // Se a posição ficou zerada, remover o ativo da carteira
+        if (posicaoAtual - quantidade <= 0) {
+            this.posicoes.remove(idCriptoativo);
+        }
+        
+        // Registrar operação no histórico
+        Map<String, Object> operacao = new HashMap<>();
+        operacao.put("tipo", "venda");
+        operacao.put("idCriptoativo", idCriptoativo);
+        operacao.put("quantidade", quantidade);
+        operacao.put("valorUnitario", valorUnitario);
+        operacao.put("valorTotal", valorTotal);
+        operacao.put("dataHora", LocalDateTime.now());
+        this.historico.add(operacao);
+        
+        return true;
+    }
+    
+    /**
+     * Simula a variação de preço de um ativo ao longo do tempo
+     * @param idCriptoativo ID do criptoativo
+     * @param precoInicial Preço inicial do ativo
+     * @param volatilidade Volatilidade do ativo (0.0 a 1.0)
+     * @param diasSimulados Número de dias a simular
+     * @return Lista de preços simulados para cada dia
+     */
+    public List<Double> simularVariacaoPreco(int idCriptoativo, double precoInicial, double volatilidade, int diasSimulados) {
+        List<Double> precos = new ArrayList<>();
+        double precoAtual = precoInicial;
+        precos.add(precoAtual);
+        
+        Random random = new Random();
+        
+        for (int i = 0; i < diasSimulados; i++) {
+            // Gerar variação aleatória com base na volatilidade
+            double variacao = (random.nextDouble() * 2 - 1) * volatilidade;
+            precoAtual = precoAtual * (1 + variacao);
+            
+            // Garantir que o preço não fique negativo
+            if (precoAtual < 0.01) {
+                precoAtual = 0.01;
+            }
+            
+            precos.add(precoAtual);
+        }
+        
+        return precos;
+    }
+    
+    /**
+     * Simula o resultado de uma estratégia automática ao longo do tempo
+     * @param estrategia Estratégia a ser simulada
+     * @param mercado Mercado simulado
+     * @param diasSimulados Número de dias a simular
+     * @return Rendimento percentual da estratégia
+     */
+    public double simularEstrategia(EstrategiaAutomatica estrategia, Map<Integer, List<Double>> mercadoSimulado, int diasSimulados) {
+        double saldoInicial = this.saldoVirtual;
+        int idCriptoativo = estrategia.getIdCriptoativo();
+        
+        // Verificar se o ativo existe no mercado simulado
+        if (!mercadoSimulado.containsKey(idCriptoativo)) {
+            return 0.0;
+        }
+        
+        List<Double> precos = mercadoSimulado.get(idCriptoativo);
+        
+        // Simular cada dia
+        for (int dia = 0; dia < Math.min(diasSimulados, precos.size() - 1); dia++) {
+            double precoAtual = precos.get(dia);
+            
+            // Simular verificação da condição da estratégia
+            boolean executar = false;
+            
+            if (estrategia.getCondicao().equals("PRECO_ACIMA")) {
+                executar = precoAtual >= estrategia.getValorReferencia();
+            } else if (estrategia.getCondicao().equals("PRECO_ABAIXO")) {
+                executar = precoAtual <= estrategia.getValorReferencia();
+            }
+            
+            // Executar a estratégia se a condição for atendida
+            if (executar) {
+                if (estrategia.getAcao().equals("COMPRAR")) {
+                    simularCompra(idCriptoativo, estrategia.getQuantidade(), precoAtual);
+                } else if (estrategia.getAcao().equals("VENDER")) {
+                    simularVenda(idCriptoativo, estrategia.getQuantidade(), precoAtual);
+                }
+            }
+        }
+        
+        // Calcular rendimento
+        double saldoFinal = this.saldoVirtual;
+        for (Map.Entry<Integer, Double> posicao : this.posicoes.entrySet()) {
+            int id = posicao.getKey();
+            double quantidade = posicao.getValue();
+            
+            if (mercadoSimulado.containsKey(id)) {
+                List<Double> precosAtivo = mercadoSimulado.get(id);
+                double ultimoPreco = precosAtivo.get(precosAtivo.size() - 1);
+                saldoFinal += quantidade * ultimoPreco;
+            }
+        }
+        
+        this.rendimentoTotal = ((saldoFinal - saldoInicial) / saldoInicial) * 100;
+        return this.rendimentoTotal;
+    }
+    
+    /**
+     * Finaliza a simulação
+     */
+    public void finalizarSimulacao() {
+        this.ativo = false;
+        this.dataFim = LocalDateTime.now();
+    }
+    
+    /**
+     * Reinicia a simulação com os mesmos parâmetros
+     * @param saldoInicial Novo saldo inicial
+     * @return true se a simulação foi reiniciada com sucesso
+     */
+    public boolean reiniciarSimulacao(double saldoInicial) {
+        this.posicoes.clear();
+        this.historico.clear();
+        this.dataInicio = LocalDateTime.now();
+        this.dataFim = null;
+        this.saldoVirtual = saldoInicial;
+        this.rendimentoTotal = 0.0;
+        this.ativo = true;
+        
+        return true;
+    }
+    
+    /**
+     * Exibe um resumo da simulação
+     */
+    public void exibirResumoSimulacao() {
+        System.out.println("=== Resumo da Simulação ===");
+        System.out.println("ID do Usuário: " + this.idUsuario);
+        System.out.println("Data de Início: " + this.dataInicio);
+        if (this.dataFim != null) {
+            System.out.println("Data de Fim: " + this.dataFim);
+        }
+        System.out.println("Status: " + (this.ativo ? "Em andamento" : "Finalizada"));
+        System.out.println("Saldo Virtual: " + this.saldoVirtual);
+        System.out.println("Posições: " + this.posicoes.size());
+        System.out.println("Operações: " + this.historico.size());
+        System.out.println("Rendimento Total: " + String.format("%.2f", this.rendimentoTotal) + "%");
+        System.out.println("==========================");
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public double getSaldoVirtual() {
+        return saldoVirtual;
+    }
+
+    public void setSaldoVirtual(double saldoVirtual) {
+        this.saldoVirtual = saldoVirtual;
+    }
+
+    public Map<Integer, Double> getPosicoes() {
+        return posicoes;
+    }
+
+    public void setPosicoes(Map<Integer, Double> posicoes) {
+        this.posicoes = posicoes;
+    }
+
+    public List<Map<String, Object>> getHistorico() {
+        return historico;
+    }
+
+    public void setHistorico(List<Map<String, Object>> historico) {
+        this.historico = historico;
+    }
+
+    public LocalDateTime getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDateTime dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDateTime getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(LocalDateTime dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public double getRendimentoTotal() {
+        return rendimentoTotal;
+    }
+
+    public void setRendimentoTotal(double rendimentoTotal) {
+        this.rendimentoTotal = rendimentoTotal;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Map<String, Object> getParametrosSimulacao() {
+        return parametrosSimulacao;
+    }
+
+    public void setParametrosSimulacao(Map<String, Object> parametrosSimulacao) {
+        this.parametrosSimulacao = parametrosSimulacao;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDateTime;
+
+/**
+ * Classe que representa uma transação de compra ou venda de criptoativos.
+ */
+public class Transacao {
+    
+    // Atributos
+    private int id;
+    private int idUsuario;
+    private int idAtivo;
+    private String tipo; // "compra" ou "venda"
+    private double precoUnitario;
+    private double volumeTransacao;
+    private double valorTotal;
+    private LocalDateTime dataHora;
+    private String status; // "pendente", "concluída", "cancelada", etc.
+    
+    // Construtores
+    public Transacao() {
+        this.dataHora = LocalDateTime.now();
+        this.status = "pendente";
+    }
+    
+    public Transacao(int id, int idUsuario, int idAtivo, String tipo, 
+                     double precoUnitario, double volumeTransacao) {
+        this.id = id;
+        this.idUsuario = idUsuario;
+        this.idAtivo = idAtivo;
+        this.tipo = tipo;
+        this.precoUnitario = precoUnitario;
+        this.volumeTransacao = volumeTransacao;
+        this.valorTotal = precoUnitario * volumeTransacao;
+        this.dataHora = LocalDateTime.now();
+        this.status = "pendente";
+    }
+    
+    // Métodos
+    public void concluir() {
+        this.status = "concluída";
+    }
+    
+    public void cancelar() {
+        this.status = "cancelada";
+    }
+    
+    public void exibirDetalhes() {
+        System.out.println("=== Transação ID: " + this.id + " ===");
+        System.out.println("Tipo: " + this.tipo);
+        System.out.println("Ativo ID: " + this.idAtivo);
+        System.out.println("Preço unitário: " + this.precoUnitario);
+        System.out.println("Volume: " + this.volumeTransacao);
+        System.out.println("Valor total: " + this.valorTotal);
+        System.out.println("Data/Hora: " + this.dataHora);
+        System.out.println("Status: " + this.status);
+    }
+    
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+    
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    
+    public int getIdAtivo() {
+        return idAtivo;
+    }
+    
+    public void setIdAtivo(int idAtivo) {
+        this.idAtivo = idAtivo;
+    }
+    
+    public String getTipo() {
+        return tipo;
+    }
+    
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    
+    public double getPrecoUnitario() {
+        return precoUnitario;
+    }
+    
+    public void setPrecoUnitario(double precoUnitario) {
+        this.precoUnitario = precoUnitario;
+        this.valorTotal = this.precoUnitario * this.volumeTransacao;
+    }
+    
+    public double getVolumeTransacao() {
+        return volumeTransacao;
+    }
+    
+    public void setVolumeTransacao(double volumeTransacao) {
+        this.volumeTransacao = volumeTransacao;
+        this.valorTotal = this.precoUnitario * this.volumeTransacao;
+    }
+    
+    public double getValorTotal() {
+        return valorTotal;
+    }
+    
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+    
+    public void setDataHora(LocalDateTime dataHora) {
+        this.dataHora = dataHora;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
+} 
+------------------------ 
+
+package br.com.tiopatinhasexchange.model;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe que representa um usuário do sistema.
+ */
+public class Usuario {
+
+    // Atributos
+    private int id;
+    private String nome;
+    private String email;
+    private String senha;
+    private LocalDate dataNascimento;
+    private String telefone;
+    private List<Carteira> carteiras;
+    private List<Alerta> alertas;
+    // private List<EstrategiaAutomatica> estrategias;
+    // private List<Simulador> simuladores;
+
+    // Construtores
+    public Usuario() {
+    }
+
+    public Usuario(int id, String nome, String email, String senha, LocalDate dataNascimento, String telefone) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.dataNascimento = dataNascimento;
+        this.telefone = telefone;
+        this.carteiras = new ArrayList<>();
+        this.alertas = new ArrayList<>();
+        // this.estrategias = new ArrayList<>();
+        // this.simuladores = new ArrayList<>();
+    }
+
+    // Métodos
+    /**
+     * Realiza o login do usuário
+     * @param email Email do usuário
+     * @param senha Senha do usuário
+     * @return true se as credenciais estiverem corretas
+     */
+    public boolean login(String email, String senha) {
+        return this.email.equals(email) && this.senha.equals(senha);
+    }
+    
+    /**
+     * Adiciona uma nova carteira ao usuário
+     * @param carteira A carteira a ser adicionada
+     */
+    public void adicionarCarteira(Carteira carteira) {
+        if (this.carteiras == null) {
+            this.carteiras = new ArrayList<>();
+        }
+        this.carteiras.add(carteira);
+    }
+    
+    /**
+     * Adiciona um alerta para o usuário
+     * @param alerta Objeto Alerta a ser adicionado
+     */
+    public void adicionarAlerta(Alerta alerta) {
+        if (this.alertas == null) {
+            this.alertas = new ArrayList<>();
+        }
+        this.alertas.add(alerta);
+    }
+    
+    // /**
+    //  * Adiciona uma estrategia para o usuário
+    //  * @param estrategia Objeto EstrategiaAutomatica a ser adicionado
+    //  */
+    // public void adicionarEstrategiaAutomatica(EstrategiaAutomatica estrategia) {
+    //     if (this.estrategias == null) {
+    //         this.estrategias = new ArrayList<>();
+    //     }
+    //     this.estrategias.add(estrategia);
+    // }
+    
+    // /**
+    //  * Adiciona um simulador para o usuário
+    //  * @param simulador Objeto Simulador a ser adicionado
+    //  */
+    // public void adicionarSimulador(Simulador simulador) {
+    //     if (this.simuladores == null) {
+    //         this.simuladores = new ArrayList<>();
+    //     }
+    //     this.simuladores.add(simulador);
+    // }
+    
+    /**
+     * Visualiza o dashboard do usuário com informações resumidas
+     */
+    public void visualizarDashboard() {
+        System.out.println("=== Dashboard do Usuário ===");
+        System.out.println("ID: " + this.id);
+        System.out.println("Nome: " + this.nome);
+        System.out.println("Email: " + this.email);
+        System.out.println("Número de Carteiras: " + 
+                (this.carteiras != null ? this.carteiras.size() : 0));
+        System.out.println("Alertas: " + 
+                (this.alertas != null ? this.alertas.size() : 0));
+        // System.out.println("Estratégias Automáticas: " + 
+        //         (this.estrategias != null ? this.estrategias.size() : 0));
+        // System.out.println("Simuladores: " + 
+        //         (this.simuladores != null ? this.simuladores.size() : 0));
+    }
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public List<Carteira> getCarteiras() {
+        return carteiras;
+    }
+
+    public void setCarteiras(List<Carteira> carteiras) {
+        this.carteiras = carteiras;
+    }
+
+    public List<Alerta> getAlertas() {
+        return alertas;
+    }
+
+    public void setAlertas(List<Alerta> alertas) {
+        this.alertas = alertas;
+    }
+
+    // public List<Estrategia> getEstrategias() {
+    //     return estrategias;
+    // }
+
+    // public void setEstrategias(List<Estrategias> estrategias) {
+    //     this.estrategias = estrategias;
+    // }
+
+    // public List<Simulador> getSimuladores() {
+    //     return simuladores;
+    // }
+
+    // public void setSimuladores(List<Simulador> simuladores) {
+    //     this.simuladores = simuladores;
+    // }
+} 
+------------------------ 
+

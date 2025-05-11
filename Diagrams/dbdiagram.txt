@@ -1,0 +1,182 @@
+// TioPatinhasExchange Database Schema
+// Link para visualizar e interagir melhor com o diagrama:
+// https://dbdocs.io/guilherme.deck1227/FIAP-ESO-2-Tio-PatinhasSprint3?view=relationships
+
+
+Table Usuario {
+  id int [pk]
+  nome varchar
+  email varchar
+  senha varchar
+  dataNascimento date
+  telefone varchar
+}
+
+Table Carteira {
+  id int [pk]
+  idUsuario int [ref: > Usuario.id]
+  saldo decimal
+}
+
+Table Criptoativo {
+  id int [pk]
+  nome varchar
+  simbolo varchar
+  precoAtual decimal
+  variacaoDia decimal
+  volumeNegociado decimal
+  ultimaAtualizacao timestamp
+  blockchain varchar
+  ofertaCirculante bigint
+  ofertaMaxima bigint
+}
+
+Table CarteiraAtivo {
+  id int [pk]
+  idCarteira int [ref: > Carteira.id]
+  idCriptoativo int [ref: > Criptoativo.id]
+  quantidade decimal
+  precoMedio decimal
+  valorTotalInvestido decimal
+  ultimaAtualizacao timestamp
+}
+
+Table CarteiraAtivoTransacao {
+  id int [pk]
+  idCarteiraAtivo int [ref: > CarteiraAtivo.id]
+  idTransacao int [ref: > Transacao.id]
+}
+
+Table Transacao {
+  id int [pk]
+  idUsuario int [ref: > Usuario.id]
+  idCarteira int [ref: > Carteira.id]
+  idAtivo int [ref: > Criptoativo.id]
+  tipo varchar
+  precoUnitario decimal
+  volumeTransacao decimal
+  valorTotal decimal
+  dataHoraTransacao timestamp
+  status varchar
+  taxaCompra decimal
+  metodoPagamento varchar
+  origemFundos varchar
+  taxaVenda decimal
+  lucroPrejuizo decimal
+  destinoFundos varchar
+  vendaTotal boolean
+}
+
+Table ModuloEducacional {
+  id int [pk]
+  tipo varchar
+  titulo varchar
+  conteudo text
+  nivel varchar
+  dataPublicacao timestamp
+  visualizacoes int
+  avaliacaoMedia decimal
+  autor int [ref: > Usuario.id]
+}
+
+Table UsuarioConteudoEducacional {
+  id int [pk]
+  idUsuario int [ref: > Usuario.id]
+  idModuloEducacional int [ref: > ModuloEducacional.id]
+  dataInscricao timestamp
+  progresso decimal
+  avaliacao int
+  concluido boolean
+  dataConclusao timestamp
+  comentarioUsuario text
+}
+
+Table Alerta {
+  id int [pk]
+  tipo varchar  // VOLATILIDADE, ESTRATEGIA, SEGURANCA, INFORMATIVO
+  titulo varchar
+  conteudo text
+  prioridade varchar // ALTA, MEDIA, BAIXA
+  dataHoraCriacao timestamp
+}
+
+Table AlertaPersonalizado {
+  id int [pk, ref: > Alerta.id]
+  idUsuario int [ref: > Usuario.id]
+  idCriptoativo int [ref: > Criptoativo.id]
+  condicao varchar
+  valorReferencia decimal
+}
+
+Table AlertaSeguranca {
+  id int [pk, ref: > Alerta.id]
+  idUsuario int [ref: > Usuario.id]
+}
+
+Table AlertaExecucaoEstrategia {
+  id int [pk, ref: > Alerta.id]
+  idUsuario int [ref: > Usuario.id]
+  idExecucaoEstrategia int [ref: > ExecucaoEstrategia.id]
+}
+
+Table AtivoCotacao {
+  id int [pk]
+  idCriptoativo int [ref: > Criptoativo.id]
+  timestamp timestamp
+  precoAbertura decimal
+  precoFechamento decimal
+  precoMaximo decimal
+  precoMinimo decimal
+  volume decimal
+  volumeFinanceiro decimal
+  fonteDados varchar
+}
+
+Table EstrategiaAutomatica {
+  id int [pk]
+  idUsuario int [ref: > Usuario.id]
+  nome varchar
+  tipo varchar
+  idAtivo int [ref: > Criptoativo.id]
+  condicaoPreco decimal
+  tipoOperacao varchar
+  quantidadeValor decimal
+  ativa boolean
+  dataHoraCriacao timestamp
+}
+
+Table ExecucaoEstrategia {
+  id int [pk]
+  idEstrategia int [ref: > EstrategiaAutomatica.id]
+  idCarteira int [ref: > Carteira.id]
+  dataHoraExecucao timestamp
+}
+
+Table Simulador {
+  id int [pk]
+  idUsuario int [ref: > Usuario.id]
+  saldoInicial decimal
+  saldoAtual decimal
+  dataHoraCriacao timestamp
+  nome varchar
+}
+
+Table SimulacaoEstrategia {
+  id int [pk]
+  idSimulador int [ref: > Simulador.id]
+  idEstrategiaAutomatica int [ref: > EstrategiaAutomatica.id]
+}
+
+Table DisparoAlerta {
+  id int [pk]
+  idAlerta int [ref: > Alerta.id]
+  idUsuario int [ref: > Usuario.id]
+  dataHoraEnvio timestamp
+  visualizado boolean
+  dataHoraVisualizacao timestamp
+  canalEnvio varchar
+  tentativasEnvio int
+  envioBemSucedido boolean
+  mensagem text
+  dadosContexto text
+}

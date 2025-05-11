@@ -1,3 +1,4 @@
+package br.com.tiopatinhasexchange.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,10 @@ public class ModuloEducacional {
     
     // Atributos
     private int id;
-    private String tipo; // ARTIGO, VIDEO, QUIZ, CURSO
+    private String tipo; // ARTIGO, VIDEO, CURSO
     private String titulo;
     private String conteudo;
     private String nivel; // INICIANTE, INTERMEDIARIO, AVANCADO
-    private List<String> tags; // Tags para categorização
     private LocalDateTime dataPublicacao;
     private int visualizacoes;
     private List<String> comentarios;
@@ -23,7 +23,6 @@ public class ModuloEducacional {
 
     // Construtores
     public ModuloEducacional() {
-        this.tags = new ArrayList<>();
         this.comentarios = new ArrayList<>();
         this.dataPublicacao = LocalDateTime.now();
         this.visualizacoes = 0;
@@ -35,7 +34,6 @@ public class ModuloEducacional {
         this.titulo = titulo;
         this.conteudo = conteudo;
         this.nivel = nivel;
-        this.tags = new ArrayList<>();
         this.comentarios = new ArrayList<>();
         this.dataPublicacao = LocalDateTime.now();
         this.visualizacoes = 0;
@@ -43,19 +41,6 @@ public class ModuloEducacional {
     }
 
     // Métodos
-    /**
-     * Adiciona uma tag ao conteúdo educacional
-     * @param tag Tag a ser adicionada
-     * @return true se a tag foi adicionada com sucesso
-     */
-    public boolean adicionarTag(String tag) {
-        if (tag == null || tag.isEmpty()) {
-            return false;
-        }
-        
-        return this.tags.add(tag);
-    }
-    
     /**
      * Adiciona um comentário ao conteúdo educacional
      * @param comentario Comentário a ser adicionado
@@ -80,25 +65,17 @@ public class ModuloEducacional {
      * Adiciona uma avaliação ao conteúdo
      * @param avaliacao Valor da avaliação (1-5)
      * @return true se a avaliação foi registrada com sucesso
+     * @throws IllegalArgumentException se a avaliação estiver fora do intervalo válido
      */
     public boolean avaliar(int avaliacao) {
         if (avaliacao < 1 || avaliacao > 5) {
-            return false;
+            throw new IllegalArgumentException("A avaliação deve estar entre 1 e 5");
         }
         
         // Em uma implementação real, seria mantido um histórico de avaliações
         // Aqui, apenas atualizamos a média
         this.avaliacaoMedia = (this.avaliacaoMedia * this.visualizacoes + avaliacao) / (this.visualizacoes + 1);
         return true;
-    }
-    
-    /**
-     * Verifica se o conteúdo contém uma determinada tag
-     * @param tag Tag a ser verificada
-     * @return true se o conteúdo possui a tag
-     */
-    public boolean possuiTag(String tag) {
-        return this.tags.contains(tag);
     }
     
     /**
@@ -119,25 +96,6 @@ public class ModuloEducacional {
     }
     
     /**
-     * Cria um quiz sobre o conteúdo educacional
-     * @return Novo módulo educacional do tipo QUIZ
-     */
-    public ModuloEducacional criarQuizRelacionado() {
-        ModuloEducacional quiz = new ModuloEducacional();
-        quiz.setTipo("QUIZ");
-        quiz.setTitulo("Quiz sobre: " + this.titulo);
-        quiz.setNivel(this.nivel);
-        quiz.setConteudo("Perguntas relacionadas a " + this.titulo);
-        
-        // Copiar tags
-        for (String tag : this.tags) {
-            quiz.adicionarTag(tag);
-        }
-        
-        return quiz;
-    }
-    
-    /**
      * Exibe o conteúdo educacional
      */
     public void exibirConteudo() {
@@ -147,8 +105,6 @@ public class ModuloEducacional {
         System.out.println("Publicado em: " + this.dataPublicacao);
         System.out.println("Visualizações: " + this.visualizacoes);
         System.out.println("Avaliação média: " + String.format("%.1f", this.avaliacaoMedia));
-        
-        System.out.println("\nTags: " + String.join(", ", this.tags));
         
         System.out.println("\nConteúdo:");
         System.out.println(this.conteudo);
@@ -200,14 +156,6 @@ public class ModuloEducacional {
 
     public void setNivel(String nivel) {
         this.nivel = nivel;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
     }
 
     public LocalDateTime getDataPublicacao() {
